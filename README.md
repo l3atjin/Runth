@@ -30,6 +30,14 @@ Our project is not just a business—-it's a movement towards creating safer and
 
 Join us in making running a safer, more enjoyable, and empowering experience for women everywhere. Together, we can outrun harassment and redefine safety in sports.
 
+## Video Walkthrough of DEMO
+
+Here's a walkthrough of implemented user stories:
+
+<img src='walkthrough.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+GIF created with KAP
+
 ## Getting Started With The Project
 
 First, run the development server:
