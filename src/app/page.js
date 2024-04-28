@@ -1,13 +1,17 @@
+"use client";
 import Image from "next/image";
+import MapComponent from "./components/map";
+import { OpenAIApi } from 'openai';
+import Chatbot from "./components/Chatbot";
 
-
-// AIzaSyDggMw_xFPUVoxoyW5_-HuOxtn4ReC0mWE
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <div className="">
       <h1>Welcome to Runth</h1>
+      <Chatbot/>
+      <MapComponent/>
       
-    </main>
+    </div>
   );
 }
