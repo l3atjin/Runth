@@ -59,7 +59,7 @@ export default function MapComponent() {
   }, [map])
 
   return (
-    <div style={{height: "100vh"}}>
+    <div style={{height: "70vh"}}>
       <Map {...mapOptions} >
         <Marker position={position} />
       </Map>
