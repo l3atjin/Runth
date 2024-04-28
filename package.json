@@ -13,7 +13,8 @@
     "next": "14.2.3",
     "openai": "^4.38.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-lottie-player": "^2.0.0"
   },
   "devDependencies": {
     "@ubilabs/google-maps-react-hooks": "^2.0.2",

@@ -1,59 +1,31 @@
-import React, { useState } from 'react';
-import { OpenAI, OpenAIApi } from 'openai';
-import { Yellowtail } from 'next/font/google';
+import React, { useState, useEffect } from 'react';
+import { OpenAI } from 'openai';
+import Lottie from 'react-lottie-player';
 
 const PromptInput = () => {
   const [input, setInput] = useState('');
-
-  // const configuration = new Configuration({
-  //   apiKey: API_KEY,
-  // });
-
-  // neutral:
-  // 1 - 4 - g
-  // 6 - 7 - y
-  // 8 - 10 - r
-
-  // high:
-  // 1 - 2 - g
-  // 3 - 4 - y
-  // 5 - 10 - r
-
-  // Zipcode -> Runnable_Index 
-
-  
-  // [
-  //   94501: {
-  //   safety_idx: 9,
-  //   scenery: 2,
-  //   traffic: 5
-  // },
-  // 94120: {
-  //   safety_idx: 9,
-  //   scenery: 2,
-  //   traffic: 5
-  // }
-  // ]
-
-  // Runnable_Index = W1*(safety) + W2*(scenery) + W3*(traffic)
-  // 30> green
-  // 20-30 yellow
-  // <20 red
-
+  const [animationData, setAnimationData] = useState(null);
 
   const openai = new OpenAI({
     apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
     dangerouslyAllowBrowser: true
   });
 
-  async function sendPromptToGPT() {
+  useEffect(() => {
+    // Load the Lottie JSON file from the public folder
+    fetch('/animation.json')  // This path assumes your JSON file is named `animation.json` and located directly in the `public` folder
+      .then(response => response.json())
+      .then(data => setAnimationData(data))
+      .catch(error => console.error('Error loading the animation:', error));
+  }, []);
 
+  async function sendPromptToGPT() {
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
         {
           "role": "system",
-          "content": "You will be provided with a user's input about how they want to have their jog, and your task is to infer the user's preference on safety and scenery on a scale of 1-10 with 1 being they don't care about it at all and 10 being they care about it a lot. You output 2 numbers in the order of safety and scenery."
+          "content": "You will be provided with a user's input about how they want to have their jog, and your task is to infer the user's preference on safety, scenery, and traffic level on a scale of 1-10 with 1 being they don't care about it at all and 10 being they care about it a lot. You output 3 numbers in the order of safety, scenery, and traffic level."
         },
         {
           "role": "user",
@@ -68,14 +40,28 @@ const PromptInput = () => {
   }
 
   return (
-    <div>
-      <input
-        type="text"
+    <div className="mt-4">
+      <textarea
+        className="w-full h-32 p-4 text-black bg-white border border-gray-300 rounded-md"
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Enter your preferences..."
+        placeholder="Hey Runth, today I want to run with a nice city view with flat surface around the Financial District..."
       />
-      <button onClick={sendPromptToGPT}>Submit</button>
+      <button 
+        className="mt-4 px-6 py-2 text-white rounded-md mb-5"
+        style={{ backgroundColor: '#818cf8' }}
+        onClick={sendPromptToGPT}
+      >
+        Submit
+      </button>
+      {animationData && (
+        <Lottie 
+          animationData={animationData}
+          play
+          loop
+          style={{ width: '100%', height: 'auto', maxWidth: '400px', margin: 'auto' }}
+        />
+      )}
     </div>
   );
 };
