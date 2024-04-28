@@ -1,6 +1,9 @@
 "use client";
 import React, { useCallback, useEffect, useState } from 'react'
 import {APIProvider, Map, Marker, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
+import { data } from '../../../public/runnable_idx';
+import { placeIdToZipCode } from '../../../public/zipcodes';
+
 
 export default function MapComponent() {
   const position = {lat: 37.773972, lng: -122.431297};
@@ -13,50 +16,77 @@ export default function MapComponent() {
     mapId: process.env.NEXT_PUBLIC_MAP_ID
   };
 
+  const featureStyleOptionsRed = {
+    strokeColor: "#FF0000", // Red
+    strokeOpacity: 1.0,
+    strokeWeight: 3.0,
+    fillColor: "#FF0000", // Red
+    fillOpacity: 0.5,
+  };
+  
+  const featureStyleOptionsYellow = {
+    strokeColor: "#FFFF00", // Yellow
+    strokeOpacity: 1.0,
+    strokeWeight: 3.0,
+    fillColor: "#FFFF00", // Yellow
+    fillOpacity: 0.5,
+  };
+  
+  const featureStyleOptionsGreen = {
+    strokeColor: "#00FF00", // Green
+    strokeOpacity: 1.0,
+    strokeWeight: 3.0,
+    fillColor: "#00FF00", // Green
+    fillOpacity: 0.5,
+  };
+
+  const featureStyleOptionsGrey = {
+    strokeColor: "#808080", // Grey
+    strokeOpacity: 1.0,
+    strokeWeight: 3.0,
+    fillColor: "#808080", // Grey
+    fillOpacity: 0.5,
+  };
+  
+
   useEffect( () => {
-    if (map) {
-      if (!map.getMapCapabilities().isDataDrivenStylingAvailable) return;
-      const featureLayer = map.getFeatureLayer("POSTAL_CODE")
-      const featureStyleOptions = {
-        strokeColor: "#810FCB",
-        strokeOpacity: 1.0,
-        strokeWeight: 3.0,
-        fillColor: "#810FCB",
-        fillOpacity: 0.5,
-      };
-      const geocoder = new geocodingLibrary.Geocoder();
-
-      featureLayer.style = ( options ) => {
-        const placeId = options.feature.placeId;
-        let zipCode = "";
-
-        geocoder
-          .geocode({ placeId: placeId })
-          .then(({ results }) => {
-            if (results[0]) {
-              const address = results[0].formatted_address;
-              const zipRegex = /\b\d{5}\b/;
-              const zipCodeMatch = address.match(zipRegex);
-
-              // Check if ZIP code was found
-              if (zipCodeMatch) {
-                zipCode = zipCodeMatch[0];
-                console.log("ZIP code:", zipCode);
-              } else {
-                console.log("ZIP code not found.");
-              }
-            } else {
-              console.log("No results found");
-            }
-          })
-          .catch((e) => console.log("address not found"));
+    const setMapStyles = async () => {
+      if (map) {
+        if (!map.getMapCapabilities().isDataDrivenStylingAvailable) return;
+        const featureLayer = map.getFeatureLayer("POSTAL_CODE")
         
-        return 
-      };
-      
+        const geocoder = new geocodingLibrary.Geocoder();
+
+        featureLayer.style = ( options ) => {
+          const placeId = options.feature.placeId;
+          let zipCode = placeIdToZipCode[placeId];
+          if (!data[zipCode]) {
+            // console.log("This zipcode unavailable", zipCode)
+            // console.log("place id is", placeId)
+            return featureStyleOptionsGrey
+          }
+          const runnnableIdx = data[zipCode]["safety"] + data[zipCode]["scenery"] + data[zipCode]["traffic"];
+          
+          // console.log("Runnable idx is", runnnableIdx)
+          if (runnnableIdx > 20) {
+            return featureStyleOptionsGreen;
+          } else if (runnnableIdx > 10) {
+            return featureStyleOptionsYellow;
+          } else {
+            return featureStyleOptionsRed;
+          }
+
+          
+        };
+        
+      }
     }
+
+    setMapStyles();
     
   }, [map])
+
+  
 
   return (
     <div style={{height: "100vh"}}>
