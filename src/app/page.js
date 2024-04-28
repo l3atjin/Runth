@@ -4,9 +4,13 @@ import MapComponent from "./components/map";
 import { APIProvider } from '@vis.gl/react-google-maps';
 import { OpenAIApi } from 'openai';
 import PromptInput from "./components/propmtInput";
+import React, { useCallback, useEffect, useState } from 'react'
+
 
 
 export default function Home() {
+  const [weights, setWeights] = useState([0, 0, 0]);
+  console.log("WEIGHTS ARE", weights)
   return (
     <div className="flex flex-wrap min-h-screen bg-white">
       <div className="w-full lg:w-2/3 p-12">
@@ -14,12 +18,12 @@ export default function Home() {
         <hr className="border-2 border-red-400 mb-4" />
         <h1 className="font-rounded text-6xl font-bold mb-4" style={{ color: '#a5b4fc' }}>SAFETY <br /> STEADINESS <br /> SCENERY </h1>
         <p className="mt-4 text-gray-500">Describe your ideal running today with Runth!</p>
-        <PromptInput />
+        <PromptInput onWeightChange={setWeights}/>
       </div>
       <div className="w-1/2 lg:w-1/3 p-12">
         <APIProvider apiKey={process.env.NEXT_PUBLIC_MAPS_API_KEY}>
           <div className="rounded-lg overflow-hidden shadow-lg">
-            <MapComponent />
+            <MapComponent weights={weights} />
           </div>
         </APIProvider>
       </div>

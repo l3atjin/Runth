@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { OpenAI } from 'openai';
 import Lottie from 'react-lottie-player';
 
-const PromptInput = () => {
+const PromptInput = ( {onWeightChange} ) => {
   const [input, setInput] = useState('');
   const [animationData, setAnimationData] = useState(null);
 
@@ -36,7 +36,12 @@ const PromptInput = () => {
       max_tokens: 64,
       top_p: 0.4,
     });
-    console.log("response", response.choices[0].message.content)
+    console.log(response.choices[0].message.content)
+    const str = response.choices[0].message.content;
+    const numbers = str.split(",").map(num => parseInt(num.trim()));
+
+    console.log(numbers); // Output: [7, 9, 5]
+    onWeightChange(numbers)
   }
 
   return (

@@ -5,13 +5,13 @@ import { data } from '../../../public/runnable_idx';
 import { placeIdToZipCode } from '../../../public/zipcodes';
 
 
-export default function MapComponent() {
+export default function MapComponent( {weights} ) {
   const position = {lat: 37.773972, lng: -122.431297};
   const map = useMap();
   const geocodingLibrary = useMapsLibrary('geocoding');
 
   const mapOptions = {
-    zoom: 13,
+    zoom: 12,
     center: position,
     mapId: process.env.NEXT_PUBLIC_MAP_ID
   };
@@ -65,13 +65,15 @@ export default function MapComponent() {
             // console.log("place id is", placeId)
             return featureStyleOptionsGrey
           }
-          const runnnableIdx = data[zipCode]["safety"] + data[zipCode]["scenery"] + data[zipCode]["traffic"];
-          
-          // console.log("Runnable idx is", runnnableIdx)
-          if (runnnableIdx > 20) {
+          console.log("WEIGHTS IN MAP ARE", weights)
+          const runnnableIdx = data[zipCode]["safety"]*weights[0] + data[zipCode]["scenery"]*weights[1] + data[zipCode]["traffic"]*weights[2];
+          console.log("Runnable idx is", runnnableIdx)
+          if (runnnableIdx > 80) {
             return featureStyleOptionsGreen;
-          } else if (runnnableIdx > 10) {
+          } else if (runnnableIdx > 50) {
             return featureStyleOptionsYellow;
+          } else if (runnnableIdx == 0) {
+            return ;
           } else {
             return featureStyleOptionsRed;
           }
@@ -84,7 +86,7 @@ export default function MapComponent() {
 
     setMapStyles();
     
-  }, [map])
+  }, [map, weights])
 
   
 
