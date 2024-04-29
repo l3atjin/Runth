@@ -1,7 +1,7 @@
 # RUNTH
 
 ## Project Overview
-(RUNTH)[https://runth.vercel.app/] is dedicated to enhancing the safety and enjoyment of running for women globally. Our platform leverages extensive user research to develop features that address safety concerns and promote active lifestyles through technology and community engagement.
+[RUNTH](https://runth.vercel.app/) is dedicated to enhancing the safety and enjoyment of running for women globally. Our platform leverages extensive user research to develop features that address safety concerns and promote active lifestyles through technology and community engagement.
 
 ### Key Research Findings
 - **High Concern for Safety**: A study by Adidas reveals that 92% of women express concern for their safety while running, highlighting the need for improved safety measures.
